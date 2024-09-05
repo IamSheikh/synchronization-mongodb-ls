@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { addTweet, getAllTweets } from './services/Tweet.service';
 
 class AppUpdater {
   constructor() {
@@ -29,6 +30,18 @@ ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.handle(
+  'add',
+  async (_, tweet: { text: string; username: string; createdAt: number }) => {
+    await addTweet(tweet);
+  },
+);
+
+ipcMain.handle('get', async () => {
+  // eslint-disable-next-line no-return-await
+  return await getAllTweets();
 });
 
 if (process.env.NODE_ENV === 'production') {

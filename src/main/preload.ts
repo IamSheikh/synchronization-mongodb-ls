@@ -22,6 +22,9 @@ const electronHandler = {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
   },
+  add: (tweet: { text: string; username: string; createdAt: number }) =>
+    ipcRenderer.invoke('add', tweet),
+  get: () => ipcRenderer.invoke('get'),
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);
